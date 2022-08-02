@@ -7,6 +7,8 @@ b = 7
 def ECCPointMultiplication(iterations,x1, y1,a,b, prime):
     if (y1 ** 2) % prime != (x1 ** 3 + a * x1 + b) % prime:
         return f'The point {x1, y1} is not on the curve'
+    if y1 == 0:
+        return "Infinity"
     for i in range(1, iterations):
         # First iteration
         if i == 1:

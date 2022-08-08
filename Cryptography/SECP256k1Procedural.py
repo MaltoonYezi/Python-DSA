@@ -24,7 +24,6 @@ def addition(currentX, currentY, gx, gy, a, b, prime):
         s1 = (3 * pow(gx, 2, prime) + a) % prime
         s2 = (gy * 2) % prime
         s = (s1 * pow(s2, (prime - 2), prime)) % prime
-        print("Addition 1")
         currentX = (s ** 2 - 2 * gx) % prime
         currentY = (s * (gx - currentX) - gy) % prime
     elif currentX != gx:

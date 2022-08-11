@@ -63,4 +63,5 @@ print("Public key coordinates:", xPub,",", yPub)
 #y = 70486353993054234343658342414815626812704078223802622900411169732153437188990
 
 #Test case 2.1. Full Pulic key for test case 2:
+#Public key coordinates are right, bu the public key itself is wrong
 print("Public key (hex):", "04" + hex(int(xPub+yPub))[2:])

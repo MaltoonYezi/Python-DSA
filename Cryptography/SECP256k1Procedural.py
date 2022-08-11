@@ -50,18 +50,22 @@ def secp256k1BinaryExpansion(privateKey, gx, gy, a, b, prime):
     return (resultX, resultY)
 
 #privateKey, gx, gy, a, b, prime
-#Smaller numbers (Not Secp256k1). Works, but incorrecly. Right output for this is: (49, 71)
+#Smaller numbers (Not Secp256k1). Right output for this is: (116, 55)
 print(secp256k1BinaryExpansion(8, 47, 71, a, b, 223))
 
 #Test case 2
 priv = 0x45300f2b990d332c0ee0efd69f2c21c323d0e2d20e7bfa7b1970bbf169174c82
 xPub, yPub = secp256k1BinaryExpansion(priv, gx, gy, a, b, prime)
-xPub, yPub = str(xPub), str(yPub)
+xPub, yPub = xPub, yPub
 print("Public key coordinates:", xPub,",", yPub)
-#Works. The right values for test case 2:
+#The right values for test case 2:
 #x = 40766947848522619068424335498612406856128862642075168802372109289834906557916
 #y = 70486353993054234343658342414815626812704078223802622900411169732153437188990
 
 #Test case 2.1. Full Pulic key for test case 2:
-#Public key coordinates are right, bu the public key itself is wrong
-print("Public key (hex):", "04" + hex(int(xPub+yPub))[2:])
+print("Public key (hex), (uncompressed) :", "04" + (str(hex(xPub)[2:])) + (str(hex(yPub)[2:])))
+#The right public key (Uncormpressed):
+#045A2146590B80D1F0D97CC7104E702011AFFF21BFAF817F5C7002446369BA9DDC9BD5DCD1B4A737244D6BB7B96E256391B8597D3A7972A6F8CA9096D4AEA1F37E
+print("Public key (hex), (uncompressed) :", "02" + (str(hex(xPub)[2:])))
+#The right public key (Cormpressed):
+#025A2146590B80D1F0D97CC7104E702011AFFF21BFAF817F5C7002446369BA9DDC

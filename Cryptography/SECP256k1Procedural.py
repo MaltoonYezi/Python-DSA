@@ -63,9 +63,9 @@ print("Public key coordinates:", xPub,",", yPub)
 #y = 70486353993054234343658342414815626812704078223802622900411169732153437188990
 
 #Test case 2.1. Full Pulic key for test case 2:
-print("Public key (hex), (uncompressed) :", "04" + (str(hex(xPub)[2:])) + (str(hex(yPub)[2:])))
+print("Public key (hex), (Uncompressed) :", "04" + (str(hex(xPub)[2:])) + (str(hex(yPub)[2:])))
 #The right public key (Uncormpressed):
 #045A2146590B80D1F0D97CC7104E702011AFFF21BFAF817F5C7002446369BA9DDC9BD5DCD1B4A737244D6BB7B96E256391B8597D3A7972A6F8CA9096D4AEA1F37E
-print("Public key (hex), (uncompressed) :", "02" + (str(hex(xPub)[2:])))
-#The right public key (Cormpressed):
+print("Public key (hex), (Compressed) :", "02" + (str(hex(xPub)[2:])))
+#The right public key (Compressed):
 #025A2146590B80D1F0D97CC7104E702011AFFF21BFAF817F5C7002446369BA9DDC

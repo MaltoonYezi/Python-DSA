@@ -44,17 +44,23 @@ def secp256k1BinaryExpansion(privateKey, gx, gy, a, b, prime):
     resultX, resultY = None, None
     while coef:
         if coef & 1:
-            resultX, resultY = addition(currentX, currentY, gx, gy, a, b, prime)
-        currentX, currentY = addition(currentX, currentY, gx, gy, a, b, prime)
+            resultX, resultY = addition(resultX, resultY, currentX, currentY, a, b, prime)
+        currentX, currentY = addition(currentX, currentY, currentX, currentY, a, b, prime)
         coef >>= 1
     return (resultX, resultY)
 
 #privateKey, gx, gy, a, b, prime
 #Smaller numbers (Not Secp256k1). Works, but incorrecly. Right output for this is: (49, 71)
 print(secp256k1BinaryExpansion(8, 47, 71, a, b, 223))
+
 #Test case 2
 priv = 0x45300f2b990d332c0ee0efd69f2c21c323d0e2d20e7bfa7b1970bbf169174c82
-print(secp256k1BinaryExpansion(priv, gx, gy, a, b, prime))
-#Works incorrectly. The right values for test case 2:
+xPub, yPub = secp256k1BinaryExpansion(priv, gx, gy, a, b, prime)
+xPub, yPub = str(xPub), str(yPub)
+print("Public key coordinates:", xPub,",", yPub)
+#Works. The right values for test case 2:
 #x = 40766947848522619068424335498612406856128862642075168802372109289834906557916
 #y = 70486353993054234343658342414815626812704078223802622900411169732153437188990
+
+#Test case 2.1. Full Pulic key for test case 2:
+print("Public key (hex):", "04" + hex(int(xPub+yPub))[2:])

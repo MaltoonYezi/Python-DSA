@@ -81,7 +81,6 @@ class Point:
             return
         if self.y**2 != self.x**3 + a * x + b:
             raise ValueError('({}, {}) is not on the curve'.format(x, y))
-    # end::source1[]
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y \
@@ -144,18 +143,17 @@ class Point:
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
-    # tag::source3[] BINARY EXPANSION MULTIPLICATION
+    # BINARY EXPANSION MULTIPLICATION
     def __rmul__(self, coefficient):
         coef = coefficient
-        current = self  # <1>
+        current = self
         result = self.__class__(None, None, self.a, self.b)  # <2>
         while coef:
-            if coef & 1:  # <3>
+            if coef & 1:
                 result += current
-            current += current  # <4>
-            coef >>= 1  # <5>
+            current += current
+            coef >>= 1
         return result
-    # end::source3[]
 
 #Order of the finite field
 p = 2**256 - 2**32 - 977

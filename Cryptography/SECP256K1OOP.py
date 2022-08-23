@@ -1,3 +1,4 @@
+#Secp256k1 Bitcoin private to public key converter script (OOP implementation)
 
 class FieldElement:
 

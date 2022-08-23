@@ -56,7 +56,6 @@ print(secp256k1BinaryExpansion(8, 47, 71, a, b, 223))
 #Test case 2
 priv = 0x45300f2b990d332c0ee0efd69f2c21c323d0e2d20e7bfa7b1970bbf169174c82
 xPub, yPub = secp256k1BinaryExpansion(priv, gx, gy, a, b, prime)
-xPub, yPub = xPub, yPub
 print("Public key coordinates:", xPub,",", yPub)
 #The right values for test case 2:
 #x = 40766947848522619068424335498612406856128862642075168802372109289834906557916

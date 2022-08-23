@@ -1,4 +1,4 @@
-#Secp256k1 Bitcoin private to public key converter script
+#Secp256k1 Bitcoin private to public key converter script (Procedural implemetation)
 a = 0
 b = 7
 #Order of the finite field

@@ -1,4 +1,5 @@
 #Secp256k1 Bitcoin private to public key converter script (OOP implementation)
+import hashlib
 
 class FieldElement:
 
@@ -156,6 +157,51 @@ class Point:
             coef >>= 1
         return result
 
+    # For Hex Public and Private keys
+    def encode_base58(s):
+        BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
+        count = 0
+        for c in s:
+            if c == 0:
+                count += 1
+            else:
+                break
+        num = int.from_bytes(s, 'big')
+        prefix = '1' * count
+        result = ''
+        while num > 0:
+            num, mod = divmod(num, 58)
+            result = BASE58_ALPHABET[mod] + result
+        return prefix + result
+
+    def hash256(s):
+        return hashlib.sha256(hashlib.sha256(s).digest()).digest()
+
+    def encode_base58_checksum(b):
+        return Point.encode_base58(b + Point.hash256(b)[:4])
+
+
+class PrivateKey:
+
+    def __init__(self, secret):
+        self.secret = secret
+        self.point = secret * G
+
+    #For hex private keys
+    def wif(self, compressed=True, testnet=False):
+        secret_bytes = self.secret.to_bytes(32, 'big')
+        if testnet:
+            prefix = b'\xef'
+        else:
+            prefix = b'\x80'
+        if compressed:
+            suffix = b'\x01'
+        else:
+            suffix = b''
+        return Point.encode_base58_checksum(prefix + secret_bytes + suffix)
+
+
 #Order of the finite field
 p = 2**256 - 2**32 - 977
 #G coordinates
@@ -180,14 +226,22 @@ print(n*G)
 #Testing
 #Case 1. priv is a private key
 priv = 0x45300f2b990d332c0ee0efd69f2c21c323d0e2d20e7bfa7b1970bbf169174c82
+private = PrivateKey(priv)
+#Right WIF private key: 5JLktXh2sfrYhEWjr6sskAGXBUUBdKUpawg8DPxYfB9iGmuP53o
 #Right public key coordinates:
 #x = 40766947848522619068424335498612406856128862642075168802372109289834906557916
 #y = 70486353993054234343658342414815626812704078223802622900411169732153437188990
-print("Test case 1",priv*G)
+print("\nTest case 1\nPrivate Key:",hex(priv))
+print("Private Key WIF:",private.wif(compressed=False, testnet=False))
+print("Public Key coordinates\n", priv*G)
 
 #Case 2
 priv = 0x3d7a8e37e4b0bee158aaa1cd59f5fd00687dff9f5856885895de1d9627c79364
+private = PrivateKey(priv)
+#Right WIF private key: 5JHMyQAX3dU7RzuHb85LAvAJhL3SmPAbgC6GCsJamfcuxmFdoNL
 #Right public key coordinates:
 #x = 39423578571032435044709103897011871405170265732490782941797029603869780180697
 #y = 71546655698862778867132453638384448620813925930703281442431374399415200983411
-print("Test case 2",priv*G)
+print("\nTest case 2\nPrivate Key:",hex(priv))
+print("Private Key WIF:",private.wif(compressed=False, testnet=False))
+print("Public Key coordinates\n", priv*G)

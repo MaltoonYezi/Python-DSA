@@ -11,12 +11,15 @@ gy = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
 #Order of the group G
 n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
 
-
 def addition(currentX, currentY, gx, gy, a, b, prime):
-    if gy == 0:
+    if pow(gy, 2, prime) != (pow(gx, 3, prime) + a * gx + b) % prime:
+        return TypeError('The point is not on the curve')
+    if currentX == gx and currentY == gy and gy == 0 * gx:
         return (None, None)
-    elif currentX is None and currentY is None:
+    elif currentX is None:
         return (gx, gy)
+    elif gx is None:
+        return (currentX, currentY)
     elif currentX == gx and currentY != gy:
         return (None, None)
     elif currentX == gx and currentY == gy and currentY == 0:
@@ -35,7 +38,6 @@ def addition(currentX, currentY, gx, gy, a, b, prime):
         currentY = ((s * (gx - currentX)) - gy) % prime
 
     return (currentX, currentY)
-
 
 def secp256k1BinaryExpansion(privateKey, gx, gy, a, b, prime):
     if pow(gy, 2, prime) != (pow(gx, 3, prime) + a * gx + b) % prime:

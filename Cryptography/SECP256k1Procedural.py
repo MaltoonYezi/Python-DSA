@@ -13,11 +13,25 @@ n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
 #n -1 => is the number of all possible private keys
 privateKey = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364140
 
+def pow_mod(x, y, z):
+    "Calculate (x ** y) % z efficiently."
+    number = 1
+    while y:
+        if y & 1:
+            number = number * x % z
+        y >>= 1
+        x = x * x % z
+    return number
+
 def addition(currentX, currentY, gx, gy, a, b, prime):
-    if gy == 0:
+    if pow(gy, 2, prime) != (pow(gx, 3, prime) + a * gx + b) % prime:
+        return TypeError('The point is not on the curve')
+    if currentX == gx and currentY == gy and gy == 0 * gx:
         return (None, None)
-    elif currentX is None and currentY is None:
+    elif currentX is None:
         return (gx, gy)
+    elif gx is None:
+        return (currentX, currentY)
     elif currentX == gx and currentY != gy:
         return (None, None)
     elif currentX == gx and currentY == gy and currentY == 0:
@@ -37,10 +51,7 @@ def addition(currentX, currentY, gx, gy, a, b, prime):
 
     return (currentX, currentY)
 
-
 def secp256k1BinaryExpansion(privateKey, gx, gy, a, b, prime):
-    if pow(gy, 2, prime) != (pow(gx, 3, prime) + a * gx + b) % prime:
-        return "The point is not on the curve"
     coef = privateKey
     currentX, currentY = gx, gy
     resultX, resultY = None, None
@@ -50,6 +61,18 @@ def secp256k1BinaryExpansion(privateKey, gx, gy, a, b, prime):
         currentX, currentY = addition(currentX, currentY, currentX, currentY, a, b, prime)
         coef >>= 1
     return (resultX, resultY)
+
+#Input as a single quote string
+def compFullPubKey(compressed_key):
+
+    p = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
+    y_parity = int(compressed_key[:2]) - 2
+    x = int(compressed_key[2:], 16)
+    a = (pow_mod(x, 3, p) + 7) % p
+    y = pow_mod(a, (p + 1) // 4, p)
+    if y % 2 != y_parity:
+        y = -y % p
+    return x, y
 
 def uncompressed(xPub, yPub):
     if (xPub and yPub) != None:
@@ -63,7 +86,6 @@ def compressed(xPub, yPub):
 
 def encode_base58(s):
     BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-
     count = 0
     for c in s:
         if c == 0:
@@ -111,7 +133,7 @@ def address(pub, compressed=False, testnet=False):
     return encode_base58_checksum(prefix + h160)
 
 #privateKey, gx, gy, a, b, prime
-#Smaller numbers (Not Secp256k1). Right output for this is: (116, 55)
+#Smaller numbers (not Secp256k1). Right output for this is: (116, 55)
 print("Test case 1:\n", secp256k1BinaryExpansion(8, 47, 71, a, b, 223))
 
 #Test case 2
